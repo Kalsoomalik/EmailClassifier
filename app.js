@@ -15,6 +15,8 @@ function buildMetadata(sample) {
     });
 }
 
+
+
 /**
  * Function to build Pie and Bubble charts
  * @param sample

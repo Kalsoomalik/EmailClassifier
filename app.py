@@ -10,30 +10,25 @@ import sqlalchemy
 from sqlalchemy.ext.automap import automap_base
 from sqlalchemy.orm import Session
 from sqlalchemy import create_engine
+import matplotlib
+matplotlib.use('Agg')
 
 from flask import Flask, jsonify, render_template
 from flask_sqlalchemy import SQLAlchemy
+from flask import send_file
+from wordcloud import WordCloud, STOPWORDS
+import matplotlib.pyplot as plt
+import pandas as pd
+from flask import Flask ,url_for,render_template,request,abort
+
+
 
 app = Flask(__name__)
 
 
-#################################################
-# Database Setup
-#################################################
-
-app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///db/bellybutton.sqlite"
-app.config["SQLALCHEMY_TRACK_MODIFICATIONS "] = False
-
-db = SQLAlchemy(app)
-
-# reflect an existing database into a new modelj
-Base = automap_base()
-# reflect the tables
-Base.prepare(db.engine, reflect=True)
-
-# Save references to each table
-Samples_Metadata = Base.classes.sample_metadata
-Samples = Base.classes.samples
+comment_words = ' '
+stopwords = set(STOPWORDS)
+cloud_words = ' '
 
 
 @app.route("/")
@@ -41,76 +36,58 @@ def index():
     """Return the homepage."""
     return render_template("index.html")
 
+@app.route("/cloud/<max>")
+def cloud_image(max):
+    maxVal = int(max)
+    create_cloud(maxVal)
+    filename = 'cloud.png'
+    return send_file(filename, mimetype='image/png')
 
-@app.route("/names")
-def names():
-    """Return a list of sample names."""
+def create_cloud(max):
+    global cloud_words
+    global comment_words
+    cloud_words = ' '
+    comment_words = ' '
+    url = "https://s3.amazonaws.com/quicksight.mlvisualizer.com/data/mail-data-for-visualization.json"
+    result = pd.read_json(url, orient='records')
+    dataList = result.dataList
+    dataList = dataList[:max]
+    for data in dataList:
+        # print(data)
+        keywords = data['keywords']
+        for keyword in keywords:
+            # print(str(keyword['name']) + ':' + str(keyword['count']))
+            # wordCount = int(keyword['count'])
+            # print("wordCount: " + str(wordCount))
+            # while wordCount > 0:
+            #     cloud_words = cloud_words + ' ' + str(keyword['name'])
+            #     wordCount = wordCount - 1
+            cloud_words = cloud_words + ' ' + str(keyword['name'])
+            tokens = cloud_words.split()
+            # Converts each token into lowercase
+            for i in range(len(tokens)):
+                tokens[i] = tokens[i].lower()
 
-    # Use Pandas to perform the sql query
-    stmt = db.session.query(Samples).statement
-    df = pd.read_sql_query(stmt, db.session.bind)
+            for words in tokens:
+                comment_words = comment_words + words + ' '
 
-    # Return a list of the column names (sample names)
-    return jsonify(list(df.columns)[2:])
+    try:
+        # generate cloud
+        wordcloud = WordCloud(width = 600, height = 400,
+                              background_color ='white',
+                              stopwords = stopwords,
+                              min_font_size = 10).generate(comment_words)
 
-
-@app.route("/metadata/<sample>")
-def sample_metadata(sample):
-    """Return the MetaData for a given sample."""
-    sel = [
-        Samples_Metadata.sample,
-        Samples_Metadata.ETHNICITY,
-        Samples_Metadata.GENDER,
-        Samples_Metadata.AGE,
-        Samples_Metadata.LOCATION,
-        Samples_Metadata.BBTYPE,
-        Samples_Metadata.WFREQ,
-    ]
-
-    results = db.session.query(*sel).filter(Samples_Metadata.sample == sample).all()
-
-    # Create a dictionary entry for each row of metadata information
-    sample_metadata = {}
-    for result in results:
-        sample_metadata["sample"] = result[0]
-        sample_metadata["ETHNICITY"] = result[1]
-        sample_metadata["GENDER"] = result[2]
-        sample_metadata["AGE"] = result[3]
-        sample_metadata["LOCATION"] = result[4]
-        sample_metadata["BBTYPE"] = result[5]
-        sample_metadata["WFREQ"] = result[6]
-    return jsonify(sample_metadata)
-
-
-@app.route("/samples/<sample>")
-def samples(sample):
-    """Return `otu_ids`, `otu_labels`,and `sample_values`."""
-    stmt = db.session.query(Samples).statement
-
-    df = pd.read_sql_query(stmt, db.session.bind)
-
-    # Filter the data based on the sample number and
-    # only keep rows with values above 1
-    sample_data = df.loc[df[sample] > 1, ["otu_id", "otu_label", sample]]
-    # Format the data to send as json
-    data = {
-        "otu_ids": sample_data.otu_id.values.tolist(),
-        "sample_values": sample_data[sample].values.tolist(),
-        "otu_labels": sample_data.otu_label.tolist(),
-    }
-    return jsonify(data)
-
-
-@app.route("/wfreq/<sample>")
-def samples_wfreq(sample):
-    sel = [
-        Samples_Metadata.WFREQ
-    ]
-    results = db.session.query(*sel).filter(Samples_Metadata.sample == sample).all()
-    sample_metadata = {}
-    for result in results:
-        sample_metadata["WFREQ"] = result[0]
-    return jsonify(sample_metadata)
+        # plot the WordCloud image
+        plt.figure(figsize = (5, 5), facecolor = None)
+        plt.imshow(wordcloud)
+        plt.axis("off")
+        plt.tight_layout(pad = 0)
+        imageFile = "cloud.png"
+        plt.savefig(imageFile, dpi=100,
+                    bbox_inches='tight')
+    except Exception as e:
+        print(e)
 
 
 if __name__ == "__main__":

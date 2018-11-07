@@ -1,76 +1,95 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta charset="utf-8">
     <title>Email Classifier</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/superhero/bootstrap.min.css">
+    <link href="https://fonts.googleapis.com/css?family=Ubuntu" rel="stylesheet">
+    <link rel="stylesheet" href="static/css/style.css">
 </head>
+
 <body>
+<div class="wrapper">
+    <div class="hero text-center">
+        <h1>Email Classifier</h1>
+        <p>Displays Information using Machine Learning</p>
+    </div>
+    <div class="container" style="width: 100%">
+        <div class="row margin-top-50">
+            <div class="col-md-2">
+                <aside class="filters">
+                    <div class="panel panel-default" style="background-color: gray">
+                        <div class="custom-panel-heading" style="background-color: gray;
+                        height: 40px; padding: 10px">Data Selection
+                        </div>
+                        <div class="panel-body" style="background-color: gray">
+                            <form>
 
-<div class="container" style="width: 100%">
-    <div class="row">
-        <div class="col-md-12 jumbotron text-center banner">
-            <h1>Email Classifier</h1>
-            <p>Dashboard displays charts after machine learning</p>
-                <img class="nav-ufo" src="images/emailclass.jpg">
+                                <div class="form-group">
+                                    <ul class="list-group" id="filters">
+                                        <li class="filter list-group-item">
+                                            <label for="selDataset">Emails:</label>
+                                            <select class="form-control"
+                                                    id="selDataset" type="text"
+                                                    onchange="optionChanged(this.value)"
+                                                    placeholder="10">
+                                                <option value="1">Recent Email</option>
+                                                <option value="5">Last 5 Emails</option>
+                                                <option value="10" selected>Last 10 Emails</option>
+                                                <option value="25">Last 25 Emails</option>
+                                                <option value="50">Last 50 Emails</option>
+                                                <option value="75">Last 75 Emails</option>
+                                                <option value="100">Last 100 Emails</option>
+                                            </select>
+                                        </li>
+
+                                    </ul>
+                                </div>
+
+                            </form>
+                        </div>
+                    </div>
+                </aside>
+            </div>
+            <div class="col-md-10">
+                <div style="with:100%;background-color: white">
+                    <div id="cloud" class="col-md-5"
+                         style="border: 0px solid #b6b6b6; width:600px; height: 400px; margin: 5px">
+                        <img id="cloudImage" src="/cloud/10">
+                    </div>
+                    <div class="col-md-5"
+                         style="border: 0px solid #b6b6b6; width:400px; height: 400px;margin: 5px">
+                        <div id="gauge" style="height: 200px; width: 200px">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row margin-top-50">
+            <div class="col-md-2">
+                &nbsp;
+            </div>
+            <div class="col-md-10">
+                <div style="with:100%;background-color: white">
+
+                    <div style="padding: 20px; border: 2px solid #b6b6b6;">
+                        <div id="bar" style="height: 400px; width:1010px; padding: 20px;margin: 0px">
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
         </div>
     </div>
-    <div class="row">
-        <div class="col-md-2">
-            <div class="well">
-                <h5>Select Option:</h5>
-                <select id="selDataset" onchange="optionChanged(this.value)">
-                    <option value="1">Recent Email</option>
-                    <option value="5">Last 5 Emails</option>
-                    <option value="10" selected>Last 10 Emails</option>
-                    <option value="25">Last 25 Emails</option>
-                    <option value="50">Last 50 Emails</option>
-                    <option value="75">Last 75 Emails</option>
-                    <option value="100">Last 100 Emails</option>
-                </select>
-            </div>
-
-            <!--<div class="panel panel-primary">-->
-            <!--<div class="panel-heading">-->
-            <!--<h3 class="panel-title">Recent Email</h3>-->
-            <!--</div>-->
-            <!--<div id="sample-metadata" class="panel-body"></div>-->
-            <!--<script id="data" type="application/json"></script>-->
-            <!--</div>-->
-        </div>
-        <div id="cloud" class="col-md-5"
-             style="border: 0px solid #b6b6b6; width:600px; height: 400px; margin: 5px">
-            <img id="cloudImage" src="/cloud/10">
-        </div>
-        <div class="col-md-5"
-             style="border: 0px solid #b6b6b6; width:400px; height: 400px;margin: 5px">
-            <div id="gauge" style="height: 200px; width: 200px">
-            </div>
-        </div>
-    </div>
+    <footer class="footer">
+        <span class="bottom">&nbsp;</span>
+    </footer>
 </div>
-
-<div class="row">
-    <div class="col-md-2">
-        &nbsp;
-    </div>
-    <div class="col-md-10">
-        <div style="padding: 20px; border: 2px solid #b6b6b6;">
-            <div id="bar" style = "height: 400px; width:1010px; padding: 20px;margin: 0px">
-            </div>
-        </div>
-    </div>
-</div>
-<!-- <script src="https://cdn.plot.ly/plotly-1.31.2.min.js"></script> -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/5.5.0/d3.js"></script>
 <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
-<script src="{{ url_for('static', filename='js/bonus.js') }}"></script>
 <script src="{{ url_for('static', filename='js/app.js') }}"></script>
-
 </body>
-
 </html>

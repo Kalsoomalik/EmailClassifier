@@ -12,3 +12,12 @@
 body {
     background-color: #dddddd;
 }
+
+/* This CSS styles the ufo icon in the navbar */
+.nav-ufo {
+    position: absolute;
+    bottom: 5px;
+    left: 150px;
+    width: 35px;
+    color: white;
+}

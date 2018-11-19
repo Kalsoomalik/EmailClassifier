@@ -17,4 +17,3 @@ Visualizations are created using:
 
 And deployed on Heroku. It is an open source project so please feel free to fork, edit and share. Following is the flow diagram of
 the process and screen shot of visualizations.
-

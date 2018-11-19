@@ -28,3 +28,9 @@ the process and screen shot of visualizations.
 
 ### Sentiment Guage
 
+<img width="334" alt="screen shot 2018-11-19 at 10 30 28 am" src="https://user-images.githubusercontent.com/38532649/48716937-70117d80-ebe6-11e8-906c-9dd7e3fdee65.png">
+
+
+### Top Senders
+
+<img width="935" alt="screen shot 2018-11-19 at 10 30 42 am" src="https://user-images.githubusercontent.com/38532649/48716956-799ae580-ebe6-11e8-993b-348358b22d4c.png">

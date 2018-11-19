@@ -17,3 +17,5 @@ Visualizations are created using:
 
 And deployed on Heroku. It is an open source project so please feel free to fork, edit and share. Following is the flow diagram of
 the process and screen shot of visualizations.
+
+![emailclassifier](https://user-images.githubusercontent.com/38532649/48715927-2c1d7900-ebe4-11e8-9695-d74d57b492d8.jpg)

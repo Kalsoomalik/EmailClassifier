@@ -19,3 +19,12 @@ And deployed on Heroku. It is an open source project so please feel free to fork
 the process and screen shot of visualizations.
 
 ![emailclassifier](https://user-images.githubusercontent.com/38532649/48715927-2c1d7900-ebe4-11e8-9695-d74d57b492d8.jpg)
+
+
+### Word Cloud
+
+<img width="597" alt="screen shot 2018-11-19 at 10 30 16 am" src="https://user-images.githubusercontent.com/38532649/48716845-40627580-ebe6-11e8-8bd4-41d771e007f7.png">
+
+
+### Sentiment Guage
+
